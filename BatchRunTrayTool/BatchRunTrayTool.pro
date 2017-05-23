@@ -27,5 +27,3 @@ SOURCES += main.cpp\
         MainDialog.cpp
 
 HEADERS  += MainDialog.h
-
-FORMS    += MainDialog.ui
