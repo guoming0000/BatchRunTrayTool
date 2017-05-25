@@ -2,13 +2,15 @@
 #define MAINDIALOG_H
 
 #include <QDialog>
-
+#include <QHash>
 #include <QSystemTrayIcon>
+#include "ConstValue.h"
+
+#if _MSC_VER >= 1600
+#pragma execution_character_set("utf-8")
+#endif
 
 #ifndef QT_NO_SYSTEMTRAYICON
-
-
-
 class MainDialog : public QDialog
 {
     Q_OBJECT
@@ -21,10 +23,14 @@ protected slots:
 private:
     void initUI();
     void initConnect();
+
+    QString findBatFilePath(const QString& path);
+    QStringList findFolders(const QString& path);
+    QIcon getPathLogo(const QString& path);
 private:
     QSystemTrayIcon *m_trayIcon;
     QMenu *m_trayIconMenu;
-
+    QHash<QAction*, SExecItem> m_actionHash;
 
 };
 //! [0]

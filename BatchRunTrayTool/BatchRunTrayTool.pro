@@ -26,4 +26,5 @@ DEFINES += QT_DEPRECATED_WARNINGS
 SOURCES += main.cpp\
         MainDialog.cpp
 
-HEADERS  += MainDialog.h
+HEADERS  += MainDialog.h \
+    ConstValue.h
