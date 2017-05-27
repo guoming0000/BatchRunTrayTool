@@ -24,9 +24,13 @@ private:
     void initUI();
     void initConnect();
 
-    QString findBatFilePath(const QString& path);
-    QStringList findFolders(const QString& path);
+    QString findFilePath(const QString& path);
+    QStringList listAllDirs(const QString& path);
     QIcon getPathLogo(const QString& path);
+    QIcon getFileLogo(const QString& filename);
+    QMenu* createMenu(const QString& path);
+    bool isPropertyFile(const QString& dirname);
+    QAction* createActionWithFolder(QMenu* menu, const QString& filename);
 private:
     QSystemTrayIcon *m_trayIcon;
     QMenu *m_trayIconMenu;
