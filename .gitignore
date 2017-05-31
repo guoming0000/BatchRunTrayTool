@@ -1,0 +1,8 @@
+BatchRunTrayTool/Makefile.Debug
+BatchRunTrayTool/Makefile.Release
+BatchRunTrayTool/BatchRunTrayTool.pro.user
+BatchRunTrayTool/debug/*
+BatchRunTrayTool/release/*
+BatchRunTrayTool/.qmake.stash
+BatchRunTrayTool/batchRunTrayTool_zh_CN.qm
+BatchRunTrayTool/Makefile
