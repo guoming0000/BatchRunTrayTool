@@ -1,0 +1,2 @@
+ping brightguo.com
+pause

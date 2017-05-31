@@ -9,6 +9,13 @@ int main(int argc, char *argv[])
 {
     QApplication app(argc, argv);
 
+    if(QLocale::system().language() == QLocale::Chinese)
+    {
+        QTranslator *translator = new QTranslator;
+        translator->load("batchRunTrayTool_zh_CN.qm");
+        app.installTranslator(translator);
+    }
+
     if (!QSystemTrayIcon::isSystemTrayAvailable()) {
         QMessageBox::critical(0, QObject::tr("Systray"),
                               QObject::tr("I couldn't detect any system tray "

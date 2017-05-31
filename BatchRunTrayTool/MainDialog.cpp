@@ -6,6 +6,7 @@
 #include <QMessageBox>
 #include <QCoreApplication>
 #include <QFileIconProvider>
+#include <QDesktopServices>
 
 #ifdef WIN32
 #include <Windows.h>
@@ -17,7 +18,6 @@ MainDialog::MainDialog(QWidget *parent) :
 {
     initUI();
     initConnect();
-
 }
 
 MainDialog::~MainDialog()
@@ -44,6 +44,33 @@ void MainDialog::onActionTrigger(bool checked)
     DWORD nShow = item.hide ? SW_HIDE : SW_SHOW;
     ::ShellExecute(NULL, NULL, item.executableFilename.toStdWString().c_str(), NULL, NULL, nShow);
 #endif
+}
+
+void MainDialog::onProjectPage(bool checked)
+{
+    Q_UNUSED(checked)
+    QDesktopServices::openUrl(QUrl("https://github.com/guoming0000/BatchRunTrayTool"));
+}
+
+void MainDialog::onFeedback(bool checked)
+{
+    Q_UNUSED(checked)
+    QDesktopServices::openUrl(QUrl("https://github.com/guoming0000/BatchRunTrayTool/issues"));
+}
+
+void MainDialog::onUsage(bool checked)
+{
+    Q_UNUSED(checked)
+    QDesktopServices::openUrl(QUrl("https://github.com/guoming0000/BatchRunTrayTool/blob/master/README.md"));
+}
+
+void MainDialog::onActivated(QSystemTrayIcon::ActivationReason reason)
+{
+    if(QSystemTrayIcon::Trigger == reason ||
+            QSystemTrayIcon::Context == reason)
+    {
+        m_trayIcon->contextMenu()->popup(QCursor::pos());
+    }
 }
 
 void MainDialog::initUI()
@@ -77,15 +104,36 @@ void MainDialog::initUI()
     }
 
     //add exit action
-    QAction *action = new QAction(tr("Exit"));
-    action->setIcon(QIcon("config/" + PROPERTY_EXIT_LOGO));
-    connect(action, &QAction::triggered, this, &QCoreApplication::quit);
-    m_trayIconMenu->addAction(action);
+    QMenu *aboutMenu = new QMenu(tr("About") ,this);
+    aboutMenu->setIcon(QIcon(":/photo/about.png"));
+
+    QAction *projectPageAction = new QAction(tr("Project Page"));
+    projectPageAction->setIcon(QIcon(":/photo/project_page.png"));
+    connect(projectPageAction, &QAction::triggered, this, &MainDialog::onProjectPage);
+    aboutMenu->addAction(projectPageAction);
+
+    QAction *feedbackAction = new QAction(tr("Feedback"));
+    feedbackAction->setIcon(QIcon(":/photo/feedback.png"));
+    connect(feedbackAction, &QAction::triggered, this, &MainDialog::onFeedback);
+    aboutMenu->addAction(feedbackAction);
+
+    QAction *usageAction = new QAction(tr("Usage"));
+    usageAction->setIcon(QIcon(":/photo/usage.png"));
+    connect(usageAction, &QAction::triggered, this, &MainDialog::onUsage);
+    aboutMenu->addAction(usageAction);
+
+    QAction *exitAction = new QAction(tr("Exit"));
+    exitAction->setIcon(QIcon(":/photo/exit.png"));
+    connect(exitAction, &QAction::triggered, this, &QCoreApplication::quit);
+    aboutMenu->addAction(exitAction);
+    m_trayIconMenu->addMenu(aboutMenu);
 
     m_trayIcon = new QSystemTrayIcon(this);
     m_trayIcon->setContextMenu(m_trayIconMenu);
-    QIcon icon("config/" + PROPERTY_LOGO);
+    QIcon icon(":/photo/logo.png");
     m_trayIcon->setIcon(icon);
+
+    connect(m_trayIcon, &QSystemTrayIcon::activated, this, &MainDialog::onActivated);
 
     setWindowIcon(icon);
     m_trayIcon->show();
@@ -213,21 +261,13 @@ QMenu *MainDialog::createMenu(const QString &path)
 //check if it's a property file
 bool MainDialog::isPropertyFile(const QString &dirname)
 {
-    if(dirname.endsWith(PROPERTY_SHOW))
+    int count = _countof(PROPERTYS);
+    for(int i = 0; i < count; ++i)
     {
-        return true;
-    }
-    else if(dirname.endsWith(PROPERTY_LOGO))
-    {
-        return true;
-    }
-    else if(dirname.endsWith(PROPERTY_EXIT_LOGO))
-    {
-        return true;
-    }
-    else if(dirname.endsWith(PROPERTY_SEPARATOR))
-    {
-        return true;
+        if(dirname.endsWith(PROPERTYS[i]))
+        {
+            return true;
+        }
     }
     return false;
 }

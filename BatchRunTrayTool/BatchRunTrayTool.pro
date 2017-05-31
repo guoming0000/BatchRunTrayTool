@@ -28,3 +28,12 @@ SOURCES += main.cpp\
 
 HEADERS  += MainDialog.h \
     ConstValue.h
+
+TRANSLATIONS = batchRunTrayTool_zh_CN.ts
+
+win32{
+QMAKE_LFLAGS += /MANIFESTUAC:\"level=\'requireAdministrator\' uiAccess=\'false\'\"
+}
+
+RESOURCES += \
+    photo/photores.qrc

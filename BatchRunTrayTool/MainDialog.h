@@ -20,6 +20,10 @@ public:
     ~MainDialog();
 protected slots:
     void onActionTrigger(bool checked);
+    void onProjectPage(bool checked = false);
+    void onFeedback(bool checked = false);
+    void onUsage(bool checked = false);
+    void onActivated(QSystemTrayIcon::ActivationReason reason);
 private:
     void initUI();
     void initConnect();
