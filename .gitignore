@@ -6,3 +6,5 @@ BatchRunTrayTool/release/*
 BatchRunTrayTool/.qmake.stash
 BatchRunTrayTool/batchRunTrayTool_zh_CN.qm
 BatchRunTrayTool/Makefile
+/InnoSetupPackage/Output/BatchRunTrayToolSetup.exe
+/BatchRunTrayTool/BatchRunTrayTool_resource.rc

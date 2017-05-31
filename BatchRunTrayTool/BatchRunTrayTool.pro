@@ -37,3 +37,5 @@ QMAKE_LFLAGS += /MANIFESTUAC:\"level=\'requireAdministrator\' uiAccess=\'false\'
 
 RESOURCES += \
     photo/photores.qrc
+
+RC_ICONS=photo/logo.ico

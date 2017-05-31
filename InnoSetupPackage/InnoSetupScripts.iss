@@ -22,7 +22,7 @@ AppUpdatesURL={#MyAppURL}
 DefaultDirName={pf}\{#MyAppName}
 DisableProgramGroupPage=yes
 OutputBaseFilename=BatchRunTrayToolSetup
-SetupIconFile=F:\MyPrivateProjects\Git\BatchRunTrayTool\InnoSetupPackage\logo.ico
+SetupIconFile=D:\GitLife\OpenSource\BatchRunTrayTool\InnoSetupPackage\logo.ico
 Compression=lzma
 SolidCompression=yes
 
@@ -34,8 +34,8 @@ Name: "Chinese"; MessagesFile: "compiler:Languages\ChineseSimplified.isl"
 Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked
 
 [Files]
-Source: "F:\MyPrivateProjects\Git\BatchRunTrayTool\BatchRunTrayTool\release\BatchRunTrayTool.exe"; DestDir: "{app}"; Flags: ignoreversion
-Source: "F:\MyPrivateProjects\Git\BatchRunTrayTool\BatchRunTrayTool\release\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "D:\GitLife\OpenSource\BatchRunTrayTool\BatchRunTrayTool\release\Deployment\BatchRunTrayTool.exe"; DestDir: "{app}"; Flags: ignoreversion
+Source: "D:\GitLife\OpenSource\BatchRunTrayTool\BatchRunTrayTool\release\Deployment\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
 [Icons]
