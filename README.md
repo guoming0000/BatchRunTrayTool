@@ -1,4 +1,4 @@
-[![Github Releases](https://img.shields.io/badge/download-32_bit-0078d7.svg)](https://github.com/guoming0000/BatchRunTrayTool/releases/download/v17.6.1/2017-6-1BatchRunTrayToolSetup.exe) [![license](https://img.shields.io/badge/license-MIT-lightgray.svg)](https://opensource.org/licenses/MIT) [![Qt][https://img.shields.io/badge/Qt-qmake-green.svg]][https://www.qt.io]
+[![Github Releases](https://img.shields.io/badge/download-32_bit-0078d7.svg)](https://github.com/guoming0000/BatchRunTrayTool/releases/download/v17.6.1/2017-6-1BatchRunTrayToolSetup.exe) [![license](https://img.shields.io/badge/license-MIT-lightgray.svg)](https://opensource.org/licenses/MIT) [![Qt](https://img.shields.io/badge/Qt-qmake-green.svg)](https://www.qt.io)
 
 
 
@@ -28,10 +28,10 @@ After installed, you can open folder "__config-simple__" under .exe position to 
 
 了解__config-simple__是什么回事后，打开__config__可以了解更多的配置技巧。
 
-1. __\_\_logo\_\_.png__是文件夹图标。
-2. __程序\_\_logo\_\_.png__是程序的图标。（大部分程序有自己的图标）
-3. __程序\_\_show\_\___强调程序以可见方式运行，对于.bat脚本可以看到命令行界面。
-4. __文件夹\_\_seperator\_\___使得菜单产生分隔符。
+1. **\_\_logo\_\_.png**是文件夹图标。
+2. **程序\_\_logo\_\_.png**是程序的图标。（大部分程序有自己的图标）
+3. **程序\_\_show\_\_**强调程序以可见方式运行，对于.bat脚本可以看到命令行界面。
+4. **文件夹\_\_seperator\_\_**使得菜单产生分隔符。
 
 
 
