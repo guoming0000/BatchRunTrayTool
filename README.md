@@ -1,3 +1,7 @@
+[![Github Releases](https://img.shields.io/badge/download-32_bit-0078d7.svg)](https://github.com/guoming0000/BatchRunTrayTool/releases/download/v17.6.1/2017-6-1BatchRunTrayToolSetup.exe) [![license](https://img.shields.io/badge/license-MIT-lightgray.svg)](https://opensource.org/licenses/MIT) [![Qt][https://img.shields.io/badge/Qt-qmake-green.svg]][https://www.qt.io]
+
+
+
 # BatchRunTrayTool
 
 # 软件快捷访问工具
