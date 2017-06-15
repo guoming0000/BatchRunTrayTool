@@ -1,9 +1,10 @@
-#include "MainDialog.h"
+﻿#include "MainDialog.h"
 #include <QDir>
 #include <QDebug>
 #include <QMenu>
 #include <QProcess>
 #include <QMessageBox>
+#include <QApplication>
 #include <QCoreApplication>
 #include <QFileIconProvider>
 #include <QDesktopServices>
@@ -12,6 +13,8 @@
 #include <Windows.h>
 #include <tchar.h>
 #endif
+
+int const MainDialog::EXIT_CODE_REBOOT = -123456789;
 
 MainDialog::MainDialog(QWidget *parent) :
     QDialog(parent)
@@ -46,6 +49,13 @@ void MainDialog::onActionTrigger(bool checked)
 #endif
 }
 
+void MainDialog::onOpenConfigFolder(bool checked)
+{
+    Q_UNUSED(checked)
+    QString path = QDir::currentPath() + "/config";
+    QDesktopServices::openUrl(QUrl(path));
+}
+
 void MainDialog::onProjectPage(bool checked)
 {
     Q_UNUSED(checked)
@@ -62,6 +72,28 @@ void MainDialog::onUsage(bool checked)
 {
     Q_UNUSED(checked)
     QDesktopServices::openUrl(QUrl("https://github.com/guoming0000/BatchRunTrayTool/blob/master/README.md"));
+}
+
+void MainDialog::onAutoStart(bool checked)
+{
+    QString application_name = QApplication::applicationName();
+    QSettings *settings = new QSettings("HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\Run", QSettings::NativeFormat);
+    if(checked)
+    {
+        QString application_path = QApplication::applicationFilePath();
+        settings->setValue(application_name, application_path.replace("/", "\\"));
+    }
+    else
+    {
+        settings->remove(application_name);
+    }
+    delete settings;
+}
+
+void MainDialog::onReloadConfig(bool checked)
+{
+    Q_UNUSED(checked)
+    qApp->exit(MainDialog::EXIT_CODE_REBOOT);
 }
 
 void MainDialog::onActivated(QSystemTrayIcon::ActivationReason reason)
@@ -107,6 +139,16 @@ void MainDialog::initUI()
     QMenu *aboutMenu = new QMenu(tr("About") ,this);
     aboutMenu->setIcon(QIcon(":/photo/about.png"));
 
+    QAction *openConfig = new QAction(tr("Open Config Folder"));
+    openConfig->setIcon(QIcon(":/photo/feedback.png"));
+    connect(openConfig, &QAction::triggered, this, &MainDialog::onOpenConfigFolder);
+    aboutMenu->addAction(openConfig);
+
+    QAction *reloadConfig = new QAction(tr("Reload Config"));
+    reloadConfig->setIcon(QIcon(":/photo/feedback.png"));
+    connect(reloadConfig, &QAction::triggered, this, &MainDialog::onReloadConfig);
+    aboutMenu->addAction(reloadConfig);
+
     QAction *projectPageAction = new QAction(tr("Project Page"));
     projectPageAction->setIcon(QIcon(":/photo/project_page.png"));
     connect(projectPageAction, &QAction::triggered, this, &MainDialog::onProjectPage);
@@ -121,6 +163,12 @@ void MainDialog::initUI()
     usageAction->setIcon(QIcon(":/photo/usage.png"));
     connect(usageAction, &QAction::triggered, this, &MainDialog::onUsage);
     aboutMenu->addAction(usageAction);
+
+    QAction *autoStart = new QAction(tr("AutoStart"));
+    //autoStart->setIcon(QIcon(":/photo/exit.png"));
+    autoStart->setCheckable(true);
+    connect(autoStart, &QAction::triggered, this, &MainDialog::onAutoStart);
+    aboutMenu->addAction(autoStart);
 
     QAction *exitAction = new QAction(tr("Exit"));
     exitAction->setIcon(QIcon(":/photo/exit.png"));
@@ -188,7 +236,6 @@ QIcon MainDialog::getFileLogo(const QString &filename)
 {
     QFileInfo info(filename);
     QIcon icon;
-    QString dd = info.absolutePath() + "/" + info.baseName() + PROPERTY_LOGO;
     if(QFile::exists(info.absolutePath() + "/" + info.baseName() + PROPERTY_LOGO))
     {
         icon = QIcon(info.absolutePath() + "/" + info.baseName() + PROPERTY_LOGO);

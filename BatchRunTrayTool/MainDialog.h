@@ -1,4 +1,4 @@
-#ifndef MAINDIALOG_H
+﻿#ifndef MAINDIALOG_H
 #define MAINDIALOG_H
 
 #include <QDialog>
@@ -18,11 +18,16 @@ class MainDialog : public QDialog
 public:
     explicit MainDialog(QWidget *parent = 0);
     ~MainDialog();
+public:
+    static int const EXIT_CODE_REBOOT;
 protected slots:
     void onActionTrigger(bool checked);
+    void onOpenConfigFolder(bool checked = false);
+    void onReloadConfig(bool checked = false);
     void onProjectPage(bool checked = false);
     void onFeedback(bool checked = false);
     void onUsage(bool checked = false);
+    void onAutoStart(bool checked = false);
     void onActivated(QSystemTrayIcon::ActivationReason reason);
 private:
     void initUI();
@@ -39,7 +44,6 @@ private:
     QSystemTrayIcon *m_trayIcon;
     QMenu *m_trayIconMenu;
     QHash<QAction*, SExecItem> m_actionHash;
-
 };
 //! [0]
 

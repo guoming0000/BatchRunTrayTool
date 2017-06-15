@@ -1,4 +1,4 @@
-#include "MainDialog.h"
+﻿#include "MainDialog.h"
 #include <QApplication>
 
 #ifndef QT_NO_SYSTEMTRAYICON
@@ -7,26 +7,33 @@
 
 int main(int argc, char *argv[])
 {
-    QApplication app(argc, argv);
+    int currentExitCode = 0;
 
-    if(QLocale::system().language() == QLocale::Chinese)
+    do
     {
-        QTranslator *translator = new QTranslator;
-        translator->load("batchRunTrayTool_zh_CN.qm");
-        app.installTranslator(translator);
-    }
+        QApplication app(argc, argv);
 
-    if (!QSystemTrayIcon::isSystemTrayAvailable()) {
-        QMessageBox::critical(0, QObject::tr("Systray"),
-                              QObject::tr("I couldn't detect any system tray "
-                                          "on this system."));
-        return 1;
-    }
-    QApplication::setQuitOnLastWindowClosed(false);
+        if(QLocale::system().language() == QLocale::Chinese)
+        {
+            QTranslator *translator = new QTranslator;
+            translator->load("batchRunTrayTool_zh_CN.qm");
+            app.installTranslator(translator);
+        }
 
-    MainDialog window;
-    window.close();
-    return app.exec();
+        if (!QSystemTrayIcon::isSystemTrayAvailable()) {
+            QMessageBox::critical(0, QObject::tr("Systray"),
+                                  QObject::tr("I couldn't detect any system tray "
+                                              "on this system."));
+            return 1;
+        }
+        QApplication::setQuitOnLastWindowClosed(false);
+
+        MainDialog window;
+        window.close();
+        currentExitCode = app.exec();
+    }while(currentExitCode == MainDialog::EXIT_CODE_REBOOT);
+
+    return currentExitCode;
 }
 
 #else

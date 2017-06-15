@@ -8,3 +8,5 @@ BatchRunTrayTool/batchRunTrayTool_zh_CN.qm
 BatchRunTrayTool/Makefile
 /InnoSetupPackage/Output/BatchRunTrayToolSetup.exe
 /BatchRunTrayTool/BatchRunTrayTool_resource.rc
+/InnoSetupPackage/Output/2017-6-1BatchRunTrayToolSetup.exe
+/InnoSetupPackage/Output/2017-6-1BatchRunTrayToolSetup.zip
