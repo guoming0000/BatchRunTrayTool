@@ -41,9 +41,12 @@ private:
     bool isPropertyFile(const QString& dirname);
     QAction* createActionWithFolder(QMenu* menu, const QString& filename);
 private:
+    void initAutoStartAction();
+private:
     QSystemTrayIcon *m_trayIcon;
     QMenu *m_trayIconMenu;
     QHash<QAction*, SExecItem> m_actionHash;
+    QAction *m_autoStart;
 };
 //! [0]
 

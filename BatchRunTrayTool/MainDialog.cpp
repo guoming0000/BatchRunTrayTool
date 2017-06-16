@@ -140,12 +140,12 @@ void MainDialog::initUI()
     aboutMenu->setIcon(QIcon(":/photo/about.png"));
 
     QAction *openConfig = new QAction(tr("Open Config Folder"));
-    openConfig->setIcon(QIcon(":/photo/feedback.png"));
+    openConfig->setIcon(QIcon(":/photo/folder.png"));
     connect(openConfig, &QAction::triggered, this, &MainDialog::onOpenConfigFolder);
     aboutMenu->addAction(openConfig);
 
     QAction *reloadConfig = new QAction(tr("Reload Config"));
-    reloadConfig->setIcon(QIcon(":/photo/feedback.png"));
+    reloadConfig->setIcon(QIcon(":/photo/reload_config.png"));
     connect(reloadConfig, &QAction::triggered, this, &MainDialog::onReloadConfig);
     aboutMenu->addAction(reloadConfig);
 
@@ -164,11 +164,11 @@ void MainDialog::initUI()
     connect(usageAction, &QAction::triggered, this, &MainDialog::onUsage);
     aboutMenu->addAction(usageAction);
 
-    QAction *autoStart = new QAction(tr("AutoStart"));
-    //autoStart->setIcon(QIcon(":/photo/exit.png"));
-    autoStart->setCheckable(true);
-    connect(autoStart, &QAction::triggered, this, &MainDialog::onAutoStart);
-    aboutMenu->addAction(autoStart);
+    m_autoStart = new QAction(tr("AutoStart"));
+    m_autoStart->setCheckable(true);
+    connect(m_autoStart, &QAction::triggered, this, &MainDialog::onAutoStart);
+    aboutMenu->addAction(m_autoStart);
+    initAutoStartAction();
 
     QAction *exitAction = new QAction(tr("Exit"));
     exitAction->setIcon(QIcon(":/photo/exit.png"));
@@ -340,4 +340,19 @@ QAction* MainDialog::createActionWithFolder(QMenu* menu, const QString &filename
     }
 
     return action;
+}
+
+void MainDialog::initAutoStartAction()
+{
+    QString application_name = QApplication::applicationName();
+    QSettings settings("HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\Run", QSettings::NativeFormat);
+    QString application_path = QApplication::applicationFilePath();
+    if(settings.value(application_name).toString().compare(application_path.replace("/", "\\")) == 0)
+    {
+        m_autoStart->setChecked(true);
+    }
+    else
+    {
+        m_autoStart->setChecked(false);
+    }
 }

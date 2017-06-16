@@ -39,3 +39,9 @@ RESOURCES += \
     photo/photores.qrc
 
 RC_ICONS=photo/logo.ico
+
+VERSION = 2.0
+QMAKE_TARGET_PRODUCT = BactchRunTrayTool
+QMAKE_TARGET_COMPANY = BrightGuo
+QMAKE_TARGET_DESCRIPTION = BactchRunTrayTool
+QMAKE_TARGET_COPYRIGHT = Copyright (C) 2017 BrightGuo. All Rights Reserved
