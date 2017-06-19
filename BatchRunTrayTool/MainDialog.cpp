@@ -84,7 +84,7 @@ void MainDialog::updateTooltip()
 void MainDialog::onOpenConfigFolder(bool checked)
 {
     Q_UNUSED(checked)
-    QString path = QDir::currentPath() + "/config";
+    QString path = QApplication::applicationDirPath() + "/config";
     QDesktopServices::openUrl(QUrl(path));
 }
 
@@ -161,7 +161,7 @@ void MainDialog::initUI()
     //QFont font = m_trayIconMenu->font();
     //font.setPointSize(font.pointSize() * 1.5);
     //m_trayIconMenu->setFont(font);
-    QStringList outFolderList = listAllDirs("config");
+    QStringList outFolderList = listAllDirs(QApplication::applicationDirPath() + "/config");
     for(int i = 0; i < outFolderList.count(); ++i)
     {
         QString firstDirs = outFolderList.at(i);
@@ -308,7 +308,7 @@ QIcon MainDialog::getFileLogo(const QString &filename)
 QMenu *MainDialog::createMenu(const QString &path)
 {
     QDir sencondFolderDir(path);
-    QString dirName = sencondFolderDir.dirName();
+    //QString dirName = sencondFolderDir.dirName();
     QMenu *secondMenu = new QMenu(sencondFolderDir.dirName(), this);
     secondMenu->setIcon(getPathLogo(path));
     QStringList folderList = listAllDirs(path);
@@ -400,7 +400,9 @@ void MainDialog::initAutoStartAction()
     QString application_name = QApplication::applicationName();
     QSettings settings("HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\Run", QSettings::NativeFormat);
     QString application_path = QApplication::applicationFilePath();
-    if(settings.value(application_name).toString().compare(QDir::fromNativeSeparators(application_path)) == 0)
+    QString regeditPath = QDir::fromNativeSeparators(settings.value(application_name).toString());
+    QString realPath = QDir::fromNativeSeparators(application_path);
+    if(regeditPath.compare(realPath) == 0)
     {
         m_autoStart->setChecked(true);
     }

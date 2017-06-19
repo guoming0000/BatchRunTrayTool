@@ -74,12 +74,12 @@
 <context>
     <name>QObject</name>
     <message>
-        <location filename="main.cpp" line="24"/>
+        <location filename="main.cpp" line="25"/>
         <source>Systray</source>
         <translation type="unfinished">系统托盘</translation>
     </message>
     <message>
-        <location filename="main.cpp" line="25"/>
+        <location filename="main.cpp" line="26"/>
         <source>I couldn&apos;t detect any system tray on this system.</source>
         <translation type="unfinished">该系统可能不支持托盘功能。</translation>
     </message>
