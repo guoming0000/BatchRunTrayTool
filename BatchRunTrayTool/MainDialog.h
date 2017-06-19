@@ -29,6 +29,7 @@ protected slots:
     void onUsage(bool checked = false);
     void onAutoStart(bool checked = false);
     void onActivated(QSystemTrayIcon::ActivationReason reason);
+
 private:
     void initUI();
     void initConnect();
@@ -40,13 +41,22 @@ private:
     QMenu* createMenu(const QString& path);
     bool isPropertyFile(const QString& dirname);
     QAction* createActionWithFolder(QMenu* menu, const QString& filename);
+
+    void processItem(const SExecItem& item);
+    void updateTooltip();
+
 private:
     void initAutoStartAction();
+
 private:
     QSystemTrayIcon *m_trayIcon;
     QMenu *m_trayIconMenu;
     QHash<QAction*, SExecItem> m_actionHash;
     QAction *m_autoStart;
+
+    SExecItem m_lastItem;
+    QIcon m_defaultRetryIcon;
+    QIcon m_logo;
 };
 //! [0]
 

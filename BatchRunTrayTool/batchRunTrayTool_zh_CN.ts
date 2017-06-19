@@ -4,52 +4,69 @@
 <context>
     <name>MainDialog</name>
     <message>
-        <location filename="MainDialog.cpp" line="40"/>
+        <location filename="MainDialog.cpp" line="48"/>
         <source>Error</source>
         <translation type="unfinished">错误</translation>
     </message>
     <message>
-        <location filename="MainDialog.cpp" line="40"/>
+        <location filename="MainDialog.cpp" line="48"/>
         <source>File Lost : %1</source>
         <translation type="unfinished">文件丢失 : %1</translation>
     </message>
     <message>
-        <location filename="MainDialog.cpp" line="139"/>
+        <location filename="MainDialog.cpp" line="73"/>
+        <source>LeftClick: </source>
+        <translation type="unfinished">左键: </translation>
+    </message>
+    <message>
+        <location filename="MainDialog.cpp" line="74"/>
+        <source>MidClick: Clear LeftClick</source>
+        <translation type="unfinished">中键: 清除左键</translation>
+    </message>
+    <message>
+        <location filename="MainDialog.cpp" line="75"/>
+        <location filename="MainDialog.cpp" line="79"/>
+        <source>RightClick: Open Menu</source>
+        <oldsource>RightClick: Open Config</oldsource>
+        <translation type="unfinished">右键: 打开菜单</translation>
+    </message>
+    <message>
+        <location filename="MainDialog.cpp" line="189"/>
         <source>About</source>
         <translation type="unfinished">关于</translation>
     </message>
     <message>
-        <location filename="MainDialog.cpp" line="142"/>
+        <location filename="MainDialog.cpp" line="192"/>
         <source>Open Config Folder</source>
         <translation type="unfinished">打开配置目录</translation>
     </message>
     <message>
-        <location filename="MainDialog.cpp" line="147"/>
+        <location filename="MainDialog.cpp" line="197"/>
         <source>Reload Config</source>
         <translation type="unfinished">重新加载配置</translation>
     </message>
     <message>
-        <location filename="MainDialog.cpp" line="152"/>
+        <location filename="MainDialog.cpp" line="202"/>
         <source>Project Page</source>
         <translation type="unfinished">项目地址</translation>
     </message>
     <message>
-        <location filename="MainDialog.cpp" line="157"/>
+        <location filename="MainDialog.cpp" line="207"/>
         <source>Feedback</source>
         <translation type="unfinished">问题反馈</translation>
     </message>
     <message>
-        <location filename="MainDialog.cpp" line="162"/>
+        <location filename="MainDialog.cpp" line="212"/>
         <source>Usage</source>
         <translation type="unfinished">使用方法</translation>
     </message>
     <message>
-        <location filename="MainDialog.cpp" line="167"/>
+        <location filename="MainDialog.cpp" line="217"/>
         <source>AutoStart</source>
         <translation type="unfinished">软件自启动</translation>
     </message>
     <message>
-        <location filename="MainDialog.cpp" line="173"/>
+        <location filename="MainDialog.cpp" line="223"/>
         <source>Exit</source>
         <translation type="unfinished">退出</translation>
     </message>

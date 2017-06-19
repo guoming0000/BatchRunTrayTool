@@ -35,18 +35,50 @@ void MainDialog::onActionTrigger(bool checked)
     SExecItem item = m_actionHash.value(action);
     if(item.executableFilename.isEmpty()) return;
 
-    if(!QFile::exists(item.executableFilename))
-    {
-        QMessageBox::critical(this, tr("Error"), tr("File Lost : %1").arg(item.executableFilename));
-    }
-
     //QFileInfo info(item.executableFilename);
     //QProcess::startDetached(item.batFilename, QStringList(),info.path());
 
+    processItem(item);
+}
+
+void MainDialog::processItem(const SExecItem &item)
+{
+    if(!QFile::exists(item.executableFilename))
+    {
+        QMessageBox::critical(this, tr("Error"), tr("File Lost : %1").arg(item.executableFilename));
+        return;
+    }
 #ifdef WIN32
     DWORD nShow = item.hide ? SW_HIDE : SW_SHOW;
     ::ShellExecute(NULL, NULL, item.executableFilename.toStdWString().c_str(), NULL, NULL, nShow);
 #endif
+
+    m_lastItem = item;
+
+    //change icon
+    QIcon icon = getFileLogo(m_lastItem.executableFilename);
+    if(icon.isNull())
+    {
+        icon = m_defaultRetryIcon;
+    }
+    m_trayIcon->setIcon(icon);
+    updateTooltip();
+}
+
+void MainDialog::updateTooltip()
+{
+    QString tooltip;
+    if(!m_lastItem.executableFilename.isEmpty())
+    {
+        tooltip = tr("LeftClick: ") + QFileInfo(m_lastItem.executableFilename).baseName() + "\n" +
+                tr("MidClick: Clear LeftClick") + "\n" +
+                tr("RightClick: Open Menu");
+    }
+    else
+    {
+        tooltip = tr("RightClick: Open Menu");
+    }
+    m_trayIcon->setToolTip(tooltip);
 }
 
 void MainDialog::onOpenConfigFolder(bool checked)
@@ -80,8 +112,8 @@ void MainDialog::onAutoStart(bool checked)
     QSettings *settings = new QSettings("HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\Run", QSettings::NativeFormat);
     if(checked)
     {
-        QString application_path = QApplication::applicationFilePath();
-        settings->setValue(application_name, application_path.replace("/", "\\"));
+        QString application_path = QDir::toNativeSeparators(QApplication::applicationFilePath());
+        settings->setValue(application_name, application_path);
     }
     else
     {
@@ -98,10 +130,28 @@ void MainDialog::onReloadConfig(bool checked)
 
 void MainDialog::onActivated(QSystemTrayIcon::ActivationReason reason)
 {
-    if(QSystemTrayIcon::Trigger == reason ||
-            QSystemTrayIcon::Context == reason)
+    switch(reason)
     {
-        m_trayIcon->contextMenu()->popup(QCursor::pos());
+        case QSystemTrayIcon::Context://right click
+        {
+            m_trayIcon->contextMenu()->popup(QCursor::pos());
+            break;
+        }
+        case QSystemTrayIcon::Trigger://left click
+        {
+            if(!m_lastItem.executableFilename.isEmpty())
+            {
+                processItem(m_lastItem);
+            }
+            break;
+        }
+        case QSystemTrayIcon::MiddleClick:
+        {
+            m_lastItem.executableFilename.clear();
+            updateTooltip();
+            m_trayIcon->setIcon(m_logo);
+            break;
+        }
     }
 }
 
@@ -178,13 +228,16 @@ void MainDialog::initUI()
 
     m_trayIcon = new QSystemTrayIcon(this);
     m_trayIcon->setContextMenu(m_trayIconMenu);
-    QIcon icon(":/photo/logo.png");
-    m_trayIcon->setIcon(icon);
+    m_logo =  QIcon(":/photo/logo.png");
+    m_trayIcon->setIcon(m_logo);
 
     connect(m_trayIcon, &QSystemTrayIcon::activated, this, &MainDialog::onActivated);
 
-    setWindowIcon(icon);
+    setWindowIcon(m_logo);
     m_trayIcon->show();
+
+    m_defaultRetryIcon = QIcon(":/photo/retry.png");
+    updateTooltip();
 }
 
 void MainDialog::initConnect()
@@ -347,7 +400,7 @@ void MainDialog::initAutoStartAction()
     QString application_name = QApplication::applicationName();
     QSettings settings("HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\Run", QSettings::NativeFormat);
     QString application_path = QApplication::applicationFilePath();
-    if(settings.value(application_name).toString().compare(application_path.replace("/", "\\")) == 0)
+    if(settings.value(application_name).toString().compare(QDir::fromNativeSeparators(application_path)) == 0)
     {
         m_autoStart->setChecked(true);
     }
