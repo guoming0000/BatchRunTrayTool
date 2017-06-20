@@ -53,24 +53,27 @@ void MainDialog::processItem(const SExecItem &item)
     ::ShellExecute(NULL, NULL, item.executableFilename.toStdWString().c_str(), NULL, NULL, nShow);
 #endif
 
-    m_lastItem = item;
-
-    //change icon
-    QIcon icon = getFileLogo(m_lastItem.executableFilename);
-    if(icon.isNull())
+    if(m_retryMode)
     {
-        icon = m_defaultRetryIcon;
+        m_lastItem = item;
+
+        //change icon
+        QIcon icon = getFileLogo(m_lastItem.executableFilename);
+        if(icon.isNull())
+        {
+            icon = m_defaultRetryIcon;
+        }
+        m_trayIcon->setIcon(icon);
+        updateTooltip();
     }
-    m_trayIcon->setIcon(icon);
-    updateTooltip();
 }
 
 void MainDialog::updateTooltip()
 {
     QString tooltip;
-    if(!m_lastItem.executableFilename.isEmpty())
+    if(!m_lastItem.executableFilename.isEmpty() && m_retryMode)
     {
-        tooltip = tr("LeftClick: ") + QFileInfo(m_lastItem.executableFilename).baseName() + "\n" +
+        tooltip = tr("LeftClick: ") + QFileInfo(m_lastItem.executableFilename).fileName() + "\n" +
                 tr("MidClick: Clear LeftClick") + "\n" +
                 tr("RightClick: Open Menu");
     }
@@ -81,11 +84,19 @@ void MainDialog::updateTooltip()
     m_trayIcon->setToolTip(tooltip);
 }
 
+void MainDialog::closeRetryMode()
+{
+    m_retryMode = false;
+    m_lastItem.executableFilename.clear();
+    updateTooltip();
+    m_trayIcon->setIcon(m_logo);
+}
+
 void MainDialog::onOpenConfigFolder(bool checked)
 {
     Q_UNUSED(checked)
     QString path = QApplication::applicationDirPath() + "/config";
-    QDesktopServices::openUrl(QUrl(path));
+    QDesktopServices::openUrl(QUrl("file:///" + path, QUrl::TolerantMode));
 }
 
 void MainDialog::onProjectPage(bool checked)
@@ -122,6 +133,21 @@ void MainDialog::onAutoStart(bool checked)
     delete settings;
 }
 
+void MainDialog::onSetRetryMode(bool checked)
+{
+    QSettings settings(QSettings::IniFormat, QSettings::UserScope, "BrightGuo", QApplication::applicationName());
+    if(checked)
+    {
+        settings.setValue("UseRetry", true);
+        m_retryMode = true;
+    }
+    else
+    {
+        settings.setValue("UseRetry", false);
+        closeRetryMode();
+    }
+}
+
 void MainDialog::onReloadConfig(bool checked)
 {
     Q_UNUSED(checked)
@@ -139,7 +165,7 @@ void MainDialog::onActivated(QSystemTrayIcon::ActivationReason reason)
         }
         case QSystemTrayIcon::Trigger://left click
         {
-            if(!m_lastItem.executableFilename.isEmpty())
+            if(!m_lastItem.executableFilename.isEmpty() && m_retryMode)
             {
                 processItem(m_lastItem);
             }
@@ -147,9 +173,10 @@ void MainDialog::onActivated(QSystemTrayIcon::ActivationReason reason)
         }
         case QSystemTrayIcon::MiddleClick:
         {
-            m_lastItem.executableFilename.clear();
-            updateTooltip();
-            m_trayIcon->setIcon(m_logo);
+            if(m_retryMode)
+            {
+                closeRetryMode();
+            }
             break;
         }
     }
@@ -157,6 +184,7 @@ void MainDialog::onActivated(QSystemTrayIcon::ActivationReason reason)
 
 void MainDialog::initUI()
 {
+    m_retryMode = false;
     m_trayIconMenu = new QMenu(this);
     //QFont font = m_trayIconMenu->font();
     //font.setPointSize(font.pointSize() * 1.5);
@@ -219,6 +247,12 @@ void MainDialog::initUI()
     connect(m_autoStart, &QAction::triggered, this, &MainDialog::onAutoStart);
     aboutMenu->addAction(m_autoStart);
     initAutoStartAction();
+
+    m_retryAction = new QAction(tr("Retry Mode"));
+    m_retryAction->setCheckable(true);
+    connect(m_retryAction, &QAction::triggered, this, &MainDialog::onSetRetryMode);
+    aboutMenu->addAction(m_retryAction);
+    initRetryAction();
 
     QAction *exitAction = new QAction(tr("Exit"));
     exitAction->setIcon(QIcon(":/photo/exit.png"));
@@ -378,13 +412,19 @@ QAction* MainDialog::createActionWithFolder(QMenu* menu, const QString &filename
     QFileInfo fi(filename);
     if(fi.exists())
     {
-        action = new QAction(fi.baseName());
+        action = new QAction(fi.fileName());
         action->setIcon(getFileLogo(filename));
         connect(action, &QAction::triggered, this, &MainDialog::onActionTrigger);
 
         SExecItem item;
         item.executableFilename = filename;
-        item.hide = !QFile::exists(fi.absolutePath() + "/" + fi.baseName() + PROPERTY_SHOW);
+        item.hide = true;
+        if(QFile::exists(fi.absolutePath() + "/" + fi.baseName() + PROPERTY_SHOW) ||
+                QFile::exists(fi.absolutePath() + "/" + fi.fileName() + PROPERTY_SHOW))
+        {
+            item.hide = false;
+        }
+
         m_actionHash.insert(action, item);
         if(menu)
         {
@@ -409,5 +449,20 @@ void MainDialog::initAutoStartAction()
     else
     {
         m_autoStart->setChecked(false);
+    }
+}
+
+void MainDialog::initRetryAction()
+{
+    QSettings settings(QSettings::IniFormat, QSettings::UserScope, "BrightGuo", QApplication::applicationName());
+    if(settings.value("UseRetry").toBool())
+    {
+        m_retryAction->setChecked(true);
+        m_retryMode = true;
+    }
+    else
+    {
+        m_retryAction->setChecked(false);
+        m_retryMode = false;
     }
 }

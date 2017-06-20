@@ -28,6 +28,7 @@ protected slots:
     void onFeedback(bool checked = false);
     void onUsage(bool checked = false);
     void onAutoStart(bool checked = false);
+    void onSetRetryMode(bool checked = false);
     void onActivated(QSystemTrayIcon::ActivationReason reason);
 
 private:
@@ -44,19 +45,23 @@ private:
 
     void processItem(const SExecItem& item);
     void updateTooltip();
+    void closeRetryMode();
 
 private:
     void initAutoStartAction();
+    void initRetryAction();
 
 private:
     QSystemTrayIcon *m_trayIcon;
     QMenu *m_trayIconMenu;
     QHash<QAction*, SExecItem> m_actionHash;
     QAction *m_autoStart;
+    QAction *m_retryAction;
 
     SExecItem m_lastItem;
     QIcon m_defaultRetryIcon;
     QIcon m_logo;
+    bool m_retryMode;
 };
 //! [0]
 
