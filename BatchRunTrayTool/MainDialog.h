@@ -45,7 +45,7 @@ private:
 
     void processItem(const SExecItem& item);
     void updateTooltip();
-    void closeRetryMode();
+    void clearRetryMode();
 
 private:
     void initAutoStartAction();

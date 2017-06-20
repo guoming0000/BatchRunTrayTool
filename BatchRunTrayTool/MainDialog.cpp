@@ -84,9 +84,8 @@ void MainDialog::updateTooltip()
     m_trayIcon->setToolTip(tooltip);
 }
 
-void MainDialog::closeRetryMode()
+void MainDialog::clearRetryMode()
 {
-    m_retryMode = false;
     m_lastItem.executableFilename.clear();
     updateTooltip();
     m_trayIcon->setIcon(m_logo);
@@ -144,7 +143,8 @@ void MainDialog::onSetRetryMode(bool checked)
     else
     {
         settings.setValue("UseRetry", false);
-        closeRetryMode();
+        m_retryMode = false;
+        clearRetryMode();
     }
 }
 
@@ -175,7 +175,7 @@ void MainDialog::onActivated(QSystemTrayIcon::ActivationReason reason)
         {
             if(m_retryMode)
             {
-                closeRetryMode();
+                clearRetryMode();
             }
             break;
         }

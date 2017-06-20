@@ -2,7 +2,7 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyAppName "BatchRunTrayTool"
-#define MyAppVersion "17.6.1"
+#define MyAppVersion "17.6.20"
 #define MyAppPublisher "BrightGuo.com"
 #define MyAppURL "https://github.com/guoming0000/BatchRunTrayTool"
 #define MyAppExeName "BatchRunTrayTool.exe"
