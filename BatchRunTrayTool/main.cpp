@@ -16,7 +16,7 @@ int main(int argc, char *argv[])
         if(QLocale::system().language() == QLocale::Chinese)
         {
             QTranslator *translator = new QTranslator;
-            translator->load("batchRunTrayTool_zh_CN.qm");
+            translator->load(QApplication::applicationDirPath() + "/batchRunTrayTool_zh_CN.qm");
             app.installTranslator(translator);
         }
 

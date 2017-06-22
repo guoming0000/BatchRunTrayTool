@@ -73,7 +73,7 @@ void MainDialog::updateTooltip()
     QString tooltip;
     if(!m_lastItem.executableFilename.isEmpty() && m_retryMode)
     {
-        tooltip = tr("LeftClick: ") + QFileInfo(m_lastItem.executableFilename).fileName() + "\n" +
+        tooltip = tr("LeftClick: ") + QFileInfo(m_lastItem.executableFilename).completeBaseName() + "\n" +
                 tr("MidClick: Clear LeftClick") + "\n" +
                 tr("RightClick: Open Menu");
     }
@@ -327,6 +327,10 @@ QIcon MainDialog::getFileLogo(const QString &filename)
     {
         icon = QIcon(info.absolutePath() + "/" + info.baseName() + PROPERTY_LOGO);
     }
+    else if(QFile::exists(info.absolutePath() + "/" + info.completeBaseName() + PROPERTY_LOGO))
+    {
+        icon = QIcon(info.absolutePath() + "/" + info.completeBaseName() + PROPERTY_LOGO);
+    }
     else if(QFile::exists(info.absolutePath() + "/" + info.fileName() + PROPERTY_LOGO))
     {
         icon = QIcon(info.absolutePath() + "/" + info.fileName() + PROPERTY_LOGO);
@@ -412,15 +416,16 @@ QAction* MainDialog::createActionWithFolder(QMenu* menu, const QString &filename
     QFileInfo fi(filename);
     if(fi.exists())
     {
-        action = new QAction(fi.fileName());
+        action = new QAction(fi.completeBaseName());
         action->setIcon(getFileLogo(filename));
         connect(action, &QAction::triggered, this, &MainDialog::onActionTrigger);
 
         SExecItem item;
         item.executableFilename = filename;
         item.hide = true;
-        if(QFile::exists(fi.absolutePath() + "/" + fi.baseName() + PROPERTY_SHOW) ||
-                QFile::exists(fi.absolutePath() + "/" + fi.fileName() + PROPERTY_SHOW))
+        if(QFile::exists(fi.absolutePath() + "/" + fi.fileName() + PROPERTY_SHOW) ||
+                QFile::exists(fi.absolutePath() + "/" + fi.baseName() + PROPERTY_SHOW) ||
+                QFile::exists(fi.absolutePath() + "/" + fi.completeBaseName() + PROPERTY_SHOW))
         {
             item.hide = false;
         }
