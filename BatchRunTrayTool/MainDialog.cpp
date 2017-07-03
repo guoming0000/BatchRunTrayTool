@@ -259,6 +259,7 @@ void MainDialog::initUI()
     connect(exitAction, &QAction::triggered, this, &QCoreApplication::quit);
     aboutMenu->addAction(exitAction);
     m_trayIconMenu->addMenu(aboutMenu);
+    m_trayIconMenu->setContextMenuPolicy(Qt::ActionsContextMenu);
 
     m_trayIcon = new QSystemTrayIcon(this);
     m_trayIcon->setContextMenu(m_trayIconMenu);
