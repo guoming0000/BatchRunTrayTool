@@ -8,6 +8,7 @@
 #include <QCoreApplication>
 #include <QFileIconProvider>
 #include <QDesktopServices>
+#include "Tool.h"
 
 #ifdef WIN32
 #include <Windows.h>
@@ -50,7 +51,9 @@ void MainDialog::processItem(const SExecItem &item)
     }
 #ifdef WIN32
     DWORD nShow = item.hide ? SW_HIDE : SW_SHOW;
-    ::ShellExecute(NULL, NULL, item.executableFilename.toStdWString().c_str(), NULL, NULL, nShow);
+
+    ::ShellExecute(NULL, NULL, item.executableFilename.toStdWString().c_str(),
+                   NULL, CTool::GetExeDir(item.executableFilename).toStdWString().c_str(), nShow);
 #endif
 
     if(m_retryMode)
@@ -58,7 +61,7 @@ void MainDialog::processItem(const SExecItem &item)
         m_lastItem = item;
 
         //change icon
-        QIcon icon = getFileLogo(m_lastItem.executableFilename);
+        QIcon icon = CTool::GetFileLogo(m_lastItem.executableFilename);
         if(icon.isNull())
         {
             icon = m_defaultRetryIcon;
@@ -189,7 +192,7 @@ void MainDialog::initUI()
     //QFont font = m_trayIconMenu->font();
     //font.setPointSize(font.pointSize() * 1.5);
     //m_trayIconMenu->setFont(font);
-    QStringList outFolderList = listAllDirs(QApplication::applicationDirPath() + "/config");
+    QStringList outFolderList = CTool::ListAllDirs(QApplication::applicationDirPath() + "/config");
     for(int i = 0; i < outFolderList.count(); ++i)
     {
         QString firstDirs = outFolderList.at(i);
@@ -199,7 +202,7 @@ void MainDialog::initUI()
         {
             m_trayIconMenu->addSeparator();
         }
-        else if(!isPropertyFile(firstDirs) && fi.isFile())
+        else if(!CTool::IsPropertyFile(firstDirs) && fi.isFile())
         {
             createActionWithFolder(m_trayIconMenu, firstDirs);
         }
@@ -280,77 +283,14 @@ void MainDialog::initConnect()
 
 }
 
-QString MainDialog::findFilePath(const QString &path)
-{
-    QDir dir(path);
-    QStringList list = dir.entryList(QDir::Files);
-
-    if(list.count() > 0)
-    {
-        return dir.absoluteFilePath(list.at(0));
-    }
-    else
-    {
-        return QString();
-    }
-}
-
-QStringList MainDialog::listAllDirs(const QString &path)
-{
-    QDir dir(path);
-    QStringList list;
-    QStringList dirs = dir.entryList(QDir::Dirs | QDir::NoDotAndDotDot | QDir::Files);
-    for(int i = 0; i < dirs.count(); ++i)
-    {
-        list.push_back(dir.absoluteFilePath(dirs.at(i)));
-    }
-    return list;
-}
-
-QIcon MainDialog::getPathLogo(const QString &path)
-{
-    QString logoPath = path + "/" + PROPERTY_LOGO;
-    if(QFile::exists(logoPath))
-    {
-        return QIcon(logoPath);
-    }
-    else
-    {
-        return QIcon();
-    }
-}
-
-QIcon MainDialog::getFileLogo(const QString &filename)
-{
-    QFileInfo info(filename);
-    QIcon icon;
-    if(QFile::exists(info.absolutePath() + "/" + info.baseName() + PROPERTY_LOGO))
-    {
-        icon = QIcon(info.absolutePath() + "/" + info.baseName() + PROPERTY_LOGO);
-    }
-    else if(QFile::exists(info.absolutePath() + "/" + info.completeBaseName() + PROPERTY_LOGO))
-    {
-        icon = QIcon(info.absolutePath() + "/" + info.completeBaseName() + PROPERTY_LOGO);
-    }
-    else if(QFile::exists(info.absolutePath() + "/" + info.fileName() + PROPERTY_LOGO))
-    {
-        icon = QIcon(info.absolutePath() + "/" + info.fileName() + PROPERTY_LOGO);
-    }
-    else
-    {
-        QFileIconProvider provider;
-        icon = provider.icon(info);
-    }
-    return icon;
-}
 
 QMenu *MainDialog::createMenu(const QString &path)
 {
     QDir sencondFolderDir(path);
     //QString dirName = sencondFolderDir.dirName();
     QMenu *secondMenu = new QMenu(sencondFolderDir.dirName(), this);
-    secondMenu->setIcon(getPathLogo(path));
-    QStringList folderList = listAllDirs(path);
+    secondMenu->setIcon(CTool::GetPathLogo(path));
+    QStringList folderList = CTool::ListAllDirs(path);
     for(int i = 0; i < folderList.count(); ++i)
     {
         QString secondDirs = folderList.at(i);
@@ -362,14 +302,14 @@ QMenu *MainDialog::createMenu(const QString &path)
         }
         else
         {
-            if(!isPropertyFile(secondDirs) && fi.isFile())
+            if(!CTool::IsPropertyFile(secondDirs) && fi.isFile())
             {
                 createActionWithFolder(secondMenu, secondDirs);
             }
             else if(fi.isDir())
             {
                 QMenu *thirdMenu = new QMenu(secondFolderDir.dirName(), this);
-                QStringList thirdFolderList = listAllDirs(secondDirs);
+                QStringList thirdFolderList = CTool::ListAllDirs(secondDirs);
                 for(int i = 0; i < thirdFolderList.count(); ++i)
                 {
                     QString thirdDirs = thirdFolderList.at(i);
@@ -380,7 +320,7 @@ QMenu *MainDialog::createMenu(const QString &path)
                     }
                     else
                     {
-                        if(!isPropertyFile(thirdDirs) && newFi.isFile())
+                        if(!CTool::IsPropertyFile(thirdDirs) && newFi.isFile())
                         {
                             createActionWithFolder(thirdMenu, thirdDirs);
                         }
@@ -388,7 +328,7 @@ QMenu *MainDialog::createMenu(const QString &path)
                 }
                 if(thirdMenu)
                 {
-                    thirdMenu->setIcon(getPathLogo(secondDirs));
+                    thirdMenu->setIcon(CTool::GetPathLogo(secondDirs));
                     secondMenu->addMenu(thirdMenu);
                 }
             }
@@ -397,19 +337,6 @@ QMenu *MainDialog::createMenu(const QString &path)
     return secondMenu;
 }
 
-//check if it's a property file
-bool MainDialog::isPropertyFile(const QString &dirname)
-{
-    int count = _countof(PROPERTYS);
-    for(int i = 0; i < count; ++i)
-    {
-        if(dirname.endsWith(PROPERTYS[i]))
-        {
-            return true;
-        }
-    }
-    return false;
-}
 
 QAction* MainDialog::createActionWithFolder(QMenu* menu, const QString &filename)
 {
@@ -417,12 +344,17 @@ QAction* MainDialog::createActionWithFolder(QMenu* menu, const QString &filename
     QFileInfo fi(filename);
     if(fi.exists())
     {
-        action = new QAction(fi.completeBaseName());
-        action->setIcon(getFileLogo(filename));
+        action = new QAction(CTool::NicerName(filename));
+        action->setIcon(CTool::GetFileLogo(filename));
         connect(action, &QAction::triggered, this, &MainDialog::onActionTrigger);
 
         SExecItem item;
         item.executableFilename = filename;
+
+        ///////////////////////////////////////////////
+        CTool::GetExeDir(filename);
+        /////////////////////////
+
         item.hide = true;
         if(QFile::exists(fi.absolutePath() + "/" + fi.fileName() + PROPERTY_SHOW) ||
                 QFile::exists(fi.absolutePath() + "/" + fi.baseName() + PROPERTY_SHOW) ||
@@ -437,7 +369,6 @@ QAction* MainDialog::createActionWithFolder(QMenu* menu, const QString &filename
             menu->addAction(action);
         }
     }
-
     return action;
 }
 

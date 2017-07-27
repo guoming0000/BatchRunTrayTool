@@ -24,10 +24,12 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 
 SOURCES += main.cpp\
-        MainDialog.cpp
+        MainDialog.cpp \
+    Tool.cpp
 
 HEADERS  += MainDialog.h \
-    ConstValue.h
+    ConstValue.h \
+    Tool.h
 
 TRANSLATIONS = batchRunTrayTool_zh_CN.ts
 

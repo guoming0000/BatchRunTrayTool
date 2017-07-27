@@ -34,13 +34,7 @@ protected slots:
 private:
     void initUI();
     void initConnect();
-
-    QString findFilePath(const QString& path);
-    QStringList listAllDirs(const QString& path);
-    QIcon getPathLogo(const QString& path);
-    QIcon getFileLogo(const QString& filename);
     QMenu* createMenu(const QString& path);
-    bool isPropertyFile(const QString& dirname);
     QAction* createActionWithFolder(QMenu* menu, const QString& filename);
 
     void processItem(const SExecItem& item);
