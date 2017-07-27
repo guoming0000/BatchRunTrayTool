@@ -21,7 +21,6 @@ MainDialog::MainDialog(QWidget *parent) :
     QDialog(parent)
 {
     initUI();
-    initConnect();
 }
 
 MainDialog::~MainDialog()
@@ -278,12 +277,6 @@ void MainDialog::initUI()
     updateTooltip();
 }
 
-void MainDialog::initConnect()
-{
-
-}
-
-
 QMenu *MainDialog::createMenu(const QString &path)
 {
     QDir sencondFolderDir(path);
@@ -350,11 +343,6 @@ QAction* MainDialog::createActionWithFolder(QMenu* menu, const QString &filename
 
         SExecItem item;
         item.executableFilename = filename;
-
-        ///////////////////////////////////////////////
-        CTool::GetExeDir(filename);
-        /////////////////////////
-
         item.hide = true;
         if(QFile::exists(fi.absolutePath() + "/" + fi.fileName() + PROPERTY_SHOW) ||
                 QFile::exists(fi.absolutePath() + "/" + fi.baseName() + PROPERTY_SHOW) ||

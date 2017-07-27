@@ -33,7 +33,6 @@ protected slots:
 
 private:
     void initUI();
-    void initConnect();
     QMenu* createMenu(const QString& path);
     QAction* createActionWithFolder(QMenu* menu, const QString& filename);
 
