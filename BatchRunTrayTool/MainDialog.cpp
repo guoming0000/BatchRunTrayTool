@@ -343,12 +343,12 @@ QAction* MainDialog::createActionWithFolder(QMenu* menu, const QString &filename
 
         SExecItem item;
         item.executableFilename = filename;
-        item.hide = true;
-        if(QFile::exists(fi.absolutePath() + "/" + fi.fileName() + PROPERTY_SHOW) ||
-                QFile::exists(fi.absolutePath() + "/" + fi.baseName() + PROPERTY_SHOW) ||
-                QFile::exists(fi.absolutePath() + "/" + fi.completeBaseName() + PROPERTY_SHOW))
+        item.hide = false;
+        if(QFile::exists(fi.absolutePath() + "/" + fi.fileName() + PROPERTY_HIDE) ||
+                QFile::exists(fi.absolutePath() + "/" + fi.baseName() + PROPERTY_HIDE) ||
+                QFile::exists(fi.absolutePath() + "/" + fi.completeBaseName() + PROPERTY_HIDE))
         {
-            item.hide = false;
+            item.hide = true;
         }
 
         m_actionHash.insert(action, item);

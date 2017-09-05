@@ -13,7 +13,7 @@ struct SExecItem
     QList<SExecItem*> list;
 };
 
-const QString PROPERTY_SHOW = "__show__";
+const QString PROPERTY_HIDE = "__hide__";
 const QString PROPERTY_LOGO = "__logo__.png";
 const QString PROPERTY_SEPARATOR = "__separator__";
 
@@ -21,7 +21,7 @@ const QString PROPERTY_SEPARATOR = "__separator__";
 
 const QString PROPERTYS[] =
 {
-    PROPERTY_SHOW,
+    PROPERTY_HIDE,
     PROPERTY_LOGO,
     PROPERTY_SEPARATOR,
 
